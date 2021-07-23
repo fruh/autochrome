@@ -50,16 +50,21 @@ var requestFilter = {
         // makes no guarantee about the contents/order of this array,
         // you'll have to iterate through it to find for the
         // 'User-Agent' element
+        var header_found = false;
+
         for( var i = 0, l = headers.length; i < l; ++i ) {
-            if( headers[i].name == 'User-Agent' ) {
-                headers[i].value += " autochrome/" + profile;
+            if( headers[i].name == 'x-autochrome-profile' ) {
+                headers[i].value = profile;
+                header_found = true;
                 break;
             }
             // If you want to modify other headers, this is the place to
             // do it. Either remove the 'break;' statement and add in more
             // conditionals or use a 'switch' statement on 'headers[i].name'
         }
-
+        if (header_found == false) {
+            headers.push({'name': 'x-autochrome-profile', 'value': profile})
+        }
         blockingResponse.requestHeaders = headers;
         return blockingResponse;
     };
